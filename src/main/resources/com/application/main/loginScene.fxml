@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" style="-fx-background-color: linear-gradient(to top, #007adf 0%, #00ecbc 100%);;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.application.controller.LoginController">
+   <children>
+      <Pane layoutX="14.0" layoutY="14.0" prefHeight="668.0" prefWidth="503.0" style="-fx-background-color: rgba(0, 128, 255, 0.2); -fx-background-radius: 20px; -fx-border-color: white; -fx-border-radius: 20px; -fx-border-width: 3px;">
+         <children>
+            <Label alignment="CENTER" layoutX="16.0" layoutY="58.0" prefHeight="153.0" prefWidth="471.0" style="-fx-font-weight: 700;" text="ĐĂNG NHẬP" textAlignment="CENTER">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Label>
+            <TextField fx:id="usernameInput" layoutX="35.0" layoutY="247.0" prefHeight="80.0" prefWidth="430.0" style="-fx-background-radius: 20px; -fx-padding: 15px; -fx-font-size: 18px; -fx-font-weight: 700;" />
+            <PasswordField fx:id="passwordInput" layoutX="35.0" layoutY="390.0" prefHeight="80.0" prefWidth="430.0" style="-fx-background-radius: 20px; -fx-padding: 15px;" />
+            <Label layoutX="35.0" layoutY="197.0" prefHeight="50.0" prefWidth="165.0" style="-fx-font-weight: 700;" text="TÀI KHOẢN" textAlignment="CENTER">
+               <font>
+                  <Font name="Arial" size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="35.0" layoutY="340.0" prefHeight="50.0" prefWidth="165.0" style="-fx-font-weight: 700;" text="MẬT KHẨU" textAlignment="CENTER">
+               <font>
+                  <Font name="Arial" size="24.0" />
+               </font>
+            </Label>
+            <Button fx:id="loginBtn" layoutX="161.0" layoutY="508.0" mnemonicParsing="false" onMouseClicked="#login" onMouseEntered="#onMouseEntered" onMouseExited="#onMouseExited" prefHeight="59.0" prefWidth="179.0" style="-fx-background-radius: 10px; -fx-background-color: #07a386; -fx-border-color: white; -fx-border-radius: 10px; -fx-font-weight: 700;" text="ĐĂNG NHẬP">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
+      <ImageView fitHeight="481.0" fitWidth="471.0" layoutX="656.0" layoutY="115.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@assets/logo.png" />
+         </image>
+      </ImageView>
+   </children>
+</Pane>
