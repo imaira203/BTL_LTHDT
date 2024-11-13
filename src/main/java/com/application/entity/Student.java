@@ -32,8 +32,8 @@ public class Student {
         this.gender = new SimpleStringProperty(gender);
         this.majorId = new SimpleIntegerProperty(majorId);
         this.classId = new SimpleIntegerProperty(classId);
-        this.majorName = new SimpleStringProperty(""); // Initializes majorName to an empty string
-        this.className = new SimpleStringProperty(""); // Initializes className to an empty string
+        this.majorName = new SimpleStringProperty("");
+        this.className = new SimpleStringProperty("");
         this.gpa = new SimpleDoubleProperty(gpa);
     }
     // Property methods

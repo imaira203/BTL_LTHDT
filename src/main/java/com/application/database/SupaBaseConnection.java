@@ -1,6 +1,7 @@
 package com.application.database;
 
 import com.application.entity.Student;
+import com.application.entity.Class;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +75,31 @@ public class SupaBaseConnection {
         }
     }
 
+    public static List<Class> loadClassesByMajor(int majorId) {
+        List<Class> classes = new ArrayList<>();
+        String query = "SELECT * FROM class WHERE major_id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, majorId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Class cls = new Class(
+                            rs.getInt("id"),    // Replace with actual column name for class ID
+                            rs.getString("class_name") // Replace with actual column name for class name
+                    );
+                    classes.add(cls);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return classes;
+    }
+
+
     public static boolean updateStudent(Student student) {
         String query = "UPDATE sinhvien SET name=?, age=?, gender=?, major_id=?, class_id=?, gpa=? WHERE masv=?";
 
@@ -95,13 +121,13 @@ public class SupaBaseConnection {
         }
     }
 
-    public static boolean deleteStudent(String studentId) {
+    public static boolean deleteStudent(long studentId) {
         String query = "DELETE FROM sinhvien WHERE masv=?";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            stmt.setString(1, studentId);
+            stmt.setLong(1, studentId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -109,19 +135,14 @@ public class SupaBaseConnection {
         }
     }
 
-    public static List<Student> searchStudents(String name, String age) {
+    public static List<Student> searchStudents(String name) {
         List<Student> students = new ArrayList<>();
-        StringBuilder query = new StringBuilder("SELECT * FROM sinhvien WHERE 1=1");
+        StringBuilder query = new StringBuilder("SELECT * FROM sinhvien");
         List<String> parameters = new ArrayList<>();
 
         if (name != null && !name.trim().isEmpty()) {
-            query.append(" AND name ILIKE ?"); // Using ILIKE for case-insensitive search in PostgreSQL
+            query.append(" WHERE name ILIKE ?"); // ILIKE == LIKE trong SQL
             parameters.add("%" + name + "%");
-        }
-
-        if (age != null && !age.trim().isEmpty()) {
-            query.append(" AND age = ?");
-            parameters.add(age);
         }
 
         try (Connection conn = getConnection();

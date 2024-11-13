@@ -2,6 +2,7 @@ package com.application.controller;
 
 import com.application.database.DBHelper;
 import com.application.database.SupaBaseConnection;
+import com.application.services.*;
 import com.application.entity.Major;
 import com.application.entity.Class;
 import com.application.entity.Student;
@@ -12,6 +13,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+
+
+import java.util.List;
 
 public class MainController {
 
@@ -58,6 +62,15 @@ public class MainController {
         ObservableList<Class> classes = dbHelper.getClasses();
         classComboBox.setItems(classes);
 
+        majorComboBox.setOnAction(event -> {
+            Major selectedMajor = majorComboBox.getSelectionModel().getSelectedItem();
+            if (selectedMajor != null) {
+                int majorId = selectedMajor.getId();
+                List<Class> filteredClasses = SupaBaseConnection.loadClassesByMajor(majorId);
+                classComboBox.getItems().setAll(filteredClasses);
+            }
+        });
+
         // Init danh sách sinh viên
         studentList = FXCollections.observableArrayList();
         studentTable.setItems(studentList);
@@ -77,7 +90,7 @@ public class MainController {
             studentList.clear();
             studentList.addAll(SupaBaseConnection.loadStudents());
         } catch (Exception e) {
-            showAlert(AlertType.ERROR, "Database Error", "Không thể tải dữ liệu sinh viên: " + e.getMessage());
+            Instance.showAlert(AlertType.ERROR, "Database Error", "Không thể tải dữ liệu sinh viên: " + e.getMessage());
         }
     }
 
@@ -94,13 +107,15 @@ public class MainController {
     @FXML
     private void handleSearchStudent(ActionEvent event) {
         String name = studentNameField.getText();
-        String age = ageField.getText();
-
+        if (name.isEmpty()){
+            Instance.showAlert(AlertType.ERROR, "Error", "Nhập tên sinh viên cần tìm");
+            return;
+        }
         try {
             studentList.clear();
-            studentList.addAll(SupaBaseConnection.searchStudents(name, age));
+            studentList.addAll(SupaBaseConnection.searchStudents(name));
         } catch (Exception e) {
-            showAlert(AlertType.ERROR, "Search Error", "Lỗi tìm kiếm: " + e.getMessage());
+            Instance.showAlert(AlertType.ERROR, "Search Error", "Lỗi tìm kiếm: " + e.getMessage());
         }
     }
 
@@ -116,12 +131,12 @@ public class MainController {
             if (SupaBaseConnection.addStudent(newStudent)) {
                 studentList.add(newStudent);
                 clearFields();
-                showAlert(AlertType.INFORMATION, "Success", "Thêm sinh viên thành công!");
+                Instance.showAlert(AlertType.INFORMATION, "Success", "Thêm sinh viên thành công!");
             } else {
-                showAlert(AlertType.ERROR, "Error", "Không thể thêm sinh viên.");
+                Instance.showAlert(AlertType.ERROR, "Error", "Không thể thêm sinh viên.");
             }
         } catch (Exception e) {
-            showAlert(AlertType.ERROR, "Database Error", "Lỗi thêm sinh viên: " + e.getMessage());
+            Instance.showAlert(AlertType.ERROR, "Database Error", "Lỗi thêm sinh viên: " + e.getMessage());
         }
     }
 
@@ -129,7 +144,7 @@ public class MainController {
     private void handleEditStudent(ActionEvent event) {
         Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
         if (selectedStudent == null) {
-            showAlert(AlertType.ERROR, "Error", "Vui lòng chọn sinh viên cần sửa.");
+            Instance.showAlert(AlertType.ERROR, "Error", "Vui lòng chọn sinh viên cần sửa.");
             return;
         }
 
@@ -144,12 +159,12 @@ public class MainController {
                 int index = studentList.indexOf(selectedStudent);
                 studentList.set(index, updatedStudent);
                 clearFields();
-                showAlert(AlertType.INFORMATION, "Success", "Cập nhật sinh viên thành công!");
+                Instance.showAlert(AlertType.INFORMATION, "Success", "Cập nhật sinh viên thành công!");
             } else {
-                showAlert(AlertType.ERROR, "Error", "Không thể cập nhật sinh viên.");
+                Instance.showAlert(AlertType.ERROR, "Error", "Không thể cập nhật sinh viên.");
             }
         } catch (Exception e) {
-            showAlert(AlertType.ERROR, "Database Error", "Lỗi cập nhật sinh viên: " + e.getMessage());
+            Instance.showAlert(AlertType.ERROR, "Database Error", "Lỗi cập nhật sinh viên: " + e.getMessage());
         }
     }
 
@@ -157,7 +172,7 @@ public class MainController {
     private void handleDeleteStudent(ActionEvent event) {
         Student selectedStudent = studentTable.getSelectionModel().getSelectedItem();
         if (selectedStudent == null) {
-            showAlert(AlertType.ERROR, "Error", "Vui lòng chọn sinh viên cần xóa.");
+            Instance.showAlert(AlertType.ERROR, "Error", "Vui lòng chọn sinh viên cần xóa.");
             return;
         }
 
@@ -168,15 +183,15 @@ public class MainController {
         confirmDialog.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 try {
-                    if (SupaBaseConnection.deleteStudent(String.valueOf(selectedStudent.getId()))) {
+                    if (SupaBaseConnection.deleteStudent(selectedStudent.getId())) {
                         studentList.remove(selectedStudent);
                         clearFields();
-                        showAlert(AlertType.INFORMATION, "Success", "Xóa sinh viên thành công!");
+                        Instance.showAlert(AlertType.INFORMATION, "Success", "Xóa sinh viên thành công!");
                     } else {
-                        showAlert(AlertType.ERROR, "Error", "Không thể xóa sinh viên.");
+                        Instance.showAlert(AlertType.ERROR, "Error", "Không thể xóa sinh viên.");
                     }
                 } catch (Exception e) {
-                    showAlert(AlertType.ERROR, "Database Error", "Lỗi xóa sinh viên: " + e.getMessage());
+                    Instance.showAlert(AlertType.ERROR, "Database Error", "Lỗi xóa sinh viên: " + e.getMessage());
                 }
             }
         });
@@ -185,16 +200,19 @@ public class MainController {
     // Kiểm tra tính hợp lệ của đầu vào
     private boolean validateInput() {
         if (!Util.isNumeric(idField.getText()) || !Util.isNumeric(gpaField.getText())) {
-            showAlert(AlertType.ERROR, "Error", "Mã sinh viên và GPA phải là số");
+            Instance.showAlert(AlertType.ERROR, "Error", "Mã sinh viên và GPA phải là số");
             return false;
         }
         String gpaText = gpaField.getText().replace(",", ".");
         double gpa = Double.parseDouble(gpaText);
         if (gpa > 4) {
-            showAlert(AlertType.ERROR, "Error", "GPA không thể lớn hơn 4");
+            Instance.showAlert(AlertType.ERROR, "Error", "GPA không thể lớn hơn 4");
             return false;
         }
-
+        if (!Util.isNumeric(ageField.getText())){
+            Instance.showAlert(AlertType.ERROR, "Error", "Tuổi phải là 1 số");
+            return false;
+        }
         if (idField.getText().isEmpty() ||
                 studentNameField.getText().isEmpty() ||
                 ageField.getText().isEmpty() ||
@@ -203,7 +221,7 @@ public class MainController {
                 classComboBox.getValue() == null ||
                 gpaField.getText().isEmpty()) {
 
-            showAlert(AlertType.ERROR, "Error", "Vui lòng nhập đủ thông tin");
+            Instance.showAlert(AlertType.ERROR, "Error", "Vui lòng nhập đủ thông tin");
             return false;
         }
         return true;
@@ -223,22 +241,14 @@ public class MainController {
         );
     }
 
-    private void showAlert(AlertType type, String title, String message) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
     private void clearFields() {
         idField.clear();
         studentNameField.clear();
         ageField.clear();
         addressField.clear();
-        classComboBox.getSelectionModel().clearSelection();
         gpaField.clear();
-        genderComboBox.getSelectionModel().clearSelection();
-        majorComboBox.getSelectionModel().clearSelection();
+        classComboBox.setPromptText("Lớp");
+        genderComboBox.setPromptText("Giới tính");
+        majorComboBox.setPromptText("Ngành học");
     }
 }

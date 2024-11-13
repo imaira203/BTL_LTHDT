@@ -1,10 +1,12 @@
 package com.application.controller;
 
 import com.application.database.SupaBaseConnection;
+import com.application.services.Instance;
 import javafx.fxml.FXML;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -41,24 +43,21 @@ public class LoginController {
         String username = usernameInput.getText();
         String password = passwordInput.getText();
         if(SupaBaseConnection.Login(username, password)){
-            System.out.println("Login Success");
             changeToMainScene();
         }
         else {
-            System.out.println("Login Failled");
+            Instance.showAlert(Alert.AlertType.ERROR, "Login Failed", "Login failed, check the username and password");
         }
     }
 
     private void changeToMainScene() {
         try {
-            // Load the main scene (mainScene.fxml) from the same directory
+            // Chuyển sang mainScene
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/application/main/mainScene.fxml"));
             Scene mainScene = new Scene(loader.load());
-
-            // Get the current stage
             Stage stage = (Stage) loginBtn.getScene().getWindow();
 
-            // Set the new scene to the stage
+            // Load scene mới
             stage.setScene(mainScene);
             stage.show();
 
