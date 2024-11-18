@@ -35,7 +35,7 @@ public class MainController {
     @FXML
     private TableView<Student> studentTable;
     @FXML
-    private TableColumn<Student, String> idColumn, nameColumn, classColumn, ageColumn, genderColumn, majorColumn, gpaColumn;
+    private TableColumn<Student, String> idColumn, nameColumn, classColumn, addressColumn, ageColumn, genderColumn, majorColumn, gpaColumn;
 
     private ObservableList<Student> studentList;
 
@@ -52,6 +52,7 @@ public class MainController {
             return new SimpleStringProperty(className);
         });
         ageColumn.setCellValueFactory(cellData -> cellData.getValue().ageProperty().asString());
+        addressColumn.setCellValueFactory(cellData -> cellData.getValue().addressProperty());
         genderColumn.setCellValueFactory(cellData -> cellData.getValue().genderProperty());
         majorColumn.setCellValueFactory(cellData -> {
             int majorId = cellData.getValue().getMajorId();
@@ -108,8 +109,25 @@ public class MainController {
         studentNameField.setText(student.getName());
         ageField.setText(String.valueOf(student.getAge()));
         genderComboBox.setValue(student.getGender());
-        majorComboBox.setValue(new Major(student.getMajorId(), student.getMajorName()));  // Set major by id (assuming you have a Major constructor like this)
-        classComboBox.setValue(new Class(student.getClassId(), student.getClassName()));
+        addressField.setText(student.getAddress());
+
+        // Khởi tạo danh sách Ngành và Lớp để hiển thị
+        ObservableList<Major> majors = majorComboBox.getItems();
+        ObservableList<Class> classes = classComboBox.getItems();
+
+        // Tìm đối tượng tương ứng trong danh sách và đặt đối tượng đó cho ComboBox
+        Major selectedMajor = majors.stream()
+                .filter(major -> major.getId() == student.getMajorId())
+                .findFirst()
+                .orElse(null);
+        majorComboBox.setValue(selectedMajor);
+
+        Class selectedClass = classes.stream()
+                .filter(clazz -> clazz.getId() == student.getClassId())
+                .findFirst()
+                .orElse(null);
+        // Đoạn trên không hiểu lắm :)))
+        classComboBox.setValue(selectedClass);
         gpaField.setText(String.valueOf(student.getGpa()));
     }
 
@@ -246,8 +264,9 @@ public class MainController {
                 genderComboBox.getValue(),
                 selectedMajor.getId(),
                 selectedClass.getId(),
-                Double.parseDouble(gpaField.getText())
-        );
+                Double.parseDouble(gpaField.getText()),
+                addressField.getText()
+                );
     }
     @FXML
     private void handleReloadTable(ActionEvent event) {

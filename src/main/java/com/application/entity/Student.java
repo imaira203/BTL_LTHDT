@@ -8,6 +8,7 @@ public class Student {
     private StringProperty name;
     private IntegerProperty age;
     private StringProperty gender;
+    private StringProperty address;
     private IntegerProperty majorId; // Mã ngành
     private StringProperty majorName; // Tên ngành
     private IntegerProperty classId;
@@ -25,10 +26,11 @@ public class Student {
         this.gpa = new SimpleDoubleProperty(gpa);
     }
 
-    public Student(long id, String name, int age, String gender, int majorId, int classId, double gpa) {
+    public Student(long id, String name, int age, String gender, int majorId, int classId, double gpa, String address ) {
         this.id = new SimpleLongProperty(id);
         this.name = new SimpleStringProperty(name);
         this.age = new SimpleIntegerProperty(age);
+        this.address = new SimpleStringProperty(address);
         this.gender = new SimpleStringProperty(gender);
         this.majorId = new SimpleIntegerProperty(majorId);
         this.classId = new SimpleIntegerProperty(classId);
@@ -40,7 +42,9 @@ public class Student {
     public LongProperty idProperty() { return id; }
     public StringProperty nameProperty() { return name; }
     public IntegerProperty ageProperty() { return age; }
+    public StringProperty addressProperty() { return address; }
     public StringProperty genderProperty() { return gender; }
+    public StringProperty majorNameProperty() { return majorName; }
     public IntegerProperty majorIdProperty() { return majorId; }
     public IntegerProperty classIdProperty() { return classId; }
     public DoubleProperty gpaProperty() { return gpa; }
@@ -74,4 +78,8 @@ public class Student {
     public double getGpa() { return gpa.get(); }
     public void setGpa(double gpa) { this.gpa.set(gpa); }
 
+    public String getAddress() { return address.get(); }
+    public void setAddress(String address) {
+        this.address.set(address);
+    }
 }

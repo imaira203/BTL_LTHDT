@@ -44,7 +44,8 @@ public class SupaBaseConnection {
                         rs.getString("gender"),
                         rs.getInt("major_id"),
                         rs.getInt("class_id"),
-                        rs.getDouble("gpa")
+                        (rs.getDouble("gpa")),
+                        rs.getString("address")
                 );
                 students.add(student);
             }
@@ -55,7 +56,7 @@ public class SupaBaseConnection {
     }
 
     public static boolean addStudent(Student student) {
-        String query = "INSERT INTO sinhvien (masv, name, age, gender, major_id, class_id, gpa) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String query = "INSERT INTO sinhvien (masv, name, age, gender, major_id, class_id, gpa, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -67,6 +68,7 @@ public class SupaBaseConnection {
             stmt.setInt(5, student.getMajorId());
             stmt.setInt(6, student.getClassId());
             stmt.setDouble(7, student.getGpa());
+            stmt.setString(8, student.getAddress());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -161,7 +163,8 @@ public class SupaBaseConnection {
                             rs.getString("gender"),
                             rs.getInt("major_id"),
                             rs.getInt("class_id"),
-                            rs.getDouble("gpa")
+                            rs.getDouble("gpa"),
+                            rs.getString("address")
                     );
                     students.add(student);
                 }

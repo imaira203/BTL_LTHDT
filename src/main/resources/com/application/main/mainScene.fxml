@@ -68,6 +68,7 @@
          <columns>
             <TableColumn fx:id="idColumn" prefWidth="100.0" text="Mã Sinh Viên" />
             <TableColumn fx:id="nameColumn" prefWidth="150.0" text="Tên Sinh Viên" />
+            <TableColumn fx:id="addressColumn" prefWidth="150.0" text="Địa Chỉ" />
             <TableColumn fx:id="classColumn" prefWidth="100.0" text="Lớp" />
             <TableColumn fx:id="ageColumn" prefWidth="100.0" text="Tuổi" />
             <TableColumn fx:id="genderColumn" prefWidth="100.0" text="Giới tính" />
