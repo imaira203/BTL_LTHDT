@@ -7,6 +7,7 @@ import com.application.entity.Major;
 import com.application.entity.Class;
 import com.application.entity.Student;
 import com.application.utils.Util;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -40,19 +41,27 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        // Set up các cột trong TableView
+        DBHelper dbHelper = new DBHelper();
+
+        // Thiết lập các cột trong TableView
         idColumn.setCellValueFactory(cellData -> cellData.getValue().idProperty().asString());
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-        classColumn.setCellValueFactory(cellData -> cellData.getValue().classIdProperty().asString());
+        classColumn.setCellValueFactory(cellData -> {
+            int classId = cellData.getValue().getClassId();
+            String className = dbHelper.getClassNameById(classId); // Lấy tên lớp từ Map
+            return new SimpleStringProperty(className);
+        });
         ageColumn.setCellValueFactory(cellData -> cellData.getValue().ageProperty().asString());
         genderColumn.setCellValueFactory(cellData -> cellData.getValue().genderProperty());
-        majorColumn.setCellValueFactory(cellData -> cellData.getValue().majorIdProperty().asString());
+        majorColumn.setCellValueFactory(cellData -> {
+            int majorId = cellData.getValue().getMajorId();
+            String majorName = dbHelper.getMajorNameById(majorId); // Lấy tên ngành từ Map
+            return new SimpleStringProperty(majorName);
+        });
         gpaColumn.setCellValueFactory(cellData -> cellData.getValue().gpaProperty().asString());
 
         // Populate genderComboBox
         genderComboBox.setItems(FXCollections.observableArrayList("Nam", "Nữ"));
-
-        DBHelper dbHelper = new DBHelper();
 
         // Lấy danh sách ngành học
         ObservableList<Major> majors = dbHelper.getMajors();
@@ -239,6 +248,10 @@ public class MainController {
                 selectedClass.getId(),
                 Double.parseDouble(gpaField.getText())
         );
+    }
+    @FXML
+    private void handleReloadTable(ActionEvent event) {
+        initialize();
     }
 
     private void clearFields() {

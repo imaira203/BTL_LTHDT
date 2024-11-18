@@ -29,6 +29,7 @@
             <Button fx:id="addStudentBtn" maxWidth="200.0" onAction="#handleAddStudent" style="-fx-background-color: #00ecbc; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 10px;" text="Thêm Sinh Viên" />
             <Button fx:id="editStudentBtn" maxWidth="200.0" onAction="#handleEditStudent" style="-fx-background-color: #ff9f00; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 10px;" text="Sửa Sinh Viên" />
             <Button fx:id="deleteStudentBtn" maxWidth="200.0" onAction="#handleDeleteStudent" style="-fx-background-color: #ff3b30; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 10px;" text="Xóa Sinh Viên" />
+            <Button fx:id="reloadTable" maxWidth="200.0" onAction="#handleReloadTable" style="-fx-background-color: #ff3b30; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 10px;" text="Reload" />
          </VBox>
 
          <!-- Cột phải chứa form nhập thông tin sinh viên -->
