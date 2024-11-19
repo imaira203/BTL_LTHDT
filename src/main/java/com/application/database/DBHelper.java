@@ -58,6 +58,7 @@ public class DBHelper {
         return classes;
     }
 
+    // Lấy thông tin từ bảng major
     private void loadMajorMap() {
         String query = "SELECT id, name FROM major";
         try (Connection connection = getConnection();

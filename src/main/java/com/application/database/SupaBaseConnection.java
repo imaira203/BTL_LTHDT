@@ -7,12 +7,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SupaBaseConnection {
+    // URL kết nối đến database (Ở đây là dùng SupaBase host)
     private static final String DB_URL = "jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?user=postgres.ofmkamppewhdxaecryag&password=Trankimcuong2003";
 
+    // khởi tạo kết nối
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DB_URL);
     }
 
+    // kiểm tra đăng nhập
     public static boolean Login(String username, String password) {
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement("SELECT * FROM account WHERE username = ? AND password = ?")) {
@@ -29,6 +32,7 @@ public class SupaBaseConnection {
         }
     }
 
+    // load sinh viên
     public static List<Student> loadStudents() {
         List<Student> students = new ArrayList<>();
 
@@ -36,6 +40,8 @@ public class SupaBaseConnection {
              PreparedStatement stmt = conn.prepareStatement("SELECT * FROM sinhvien");
              ResultSet rs = stmt.executeQuery()) {
 
+            // lấy các giá trị tương ứng các bảng thuộc tính
+            // (vị trí, thứ tự tương ứng với constructor trong class SinhVien)
             while (rs.next()) {
                 Student student = new Student(
                         rs.getInt("masv"),
@@ -55,12 +61,12 @@ public class SupaBaseConnection {
         return students;
     }
 
-    public static boolean addStudent(Student student) {
-        String query = "INSERT INTO sinhvien (masv, name, age, gender, major_id, class_id, gpa, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    // thêm sinh viên
+    public static boolean addStudent(Student student) throws SQLException {
+        try {Connection conn = getConnection();
 
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
+            String sql = "INSERT INTO sinhvien (masv, name, age, gender, major_id, class_id, gpa, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setLong(1, student.getId());
             stmt.setString(2, student.getName());
             stmt.setInt(3, student.getAge());
@@ -70,13 +76,14 @@ public class SupaBaseConnection {
             stmt.setDouble(7, student.getGpa());
             stmt.setString(8, student.getAddress());
 
-            return stmt.executeUpdate() > 0;
+            int rowsInserted = stmt.executeUpdate();
+            return rowsInserted > 0; // Thành công nếu có bản ghi được thêm
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new SQLException("Lỗi cơ sở dữ liệu: " + e.getMessage(), e);
         }
     }
 
+    // lấy danh sách các lớp của ngành
     public static List<Class> loadClassesByMajor(int majorId) {
         List<Class> classes = new ArrayList<>();
         String query = "SELECT * FROM class WHERE major_id = ?";
@@ -89,8 +96,8 @@ public class SupaBaseConnection {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Class cls = new Class(
-                            rs.getInt("id"),    // Replace with actual column name for class ID
-                            rs.getString("class_name") // Replace with actual column name for class name
+                            rs.getInt("id"),
+                            rs.getString("class_name")
                     );
                     classes.add(cls);
                 }
@@ -101,9 +108,9 @@ public class SupaBaseConnection {
         return classes;
     }
 
-
-    public static boolean updateStudent(Student student) {
-        String query = "UPDATE sinhvien SET name=?, age=?, gender=?, major_id=?, class_id=?, gpa=? WHERE masv=?";
+    // Update sinh vien trong db
+    public static boolean updateStudent(Student student) throws SQLException {
+        String query = "UPDATE sinhvien SET name=?, age=?, gender=?, major_id=?, class_id=?, gpa=?, address=? WHERE masv=?";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
@@ -114,16 +121,17 @@ public class SupaBaseConnection {
             stmt.setInt(4, student.getMajorId());
             stmt.setInt(5, student.getClassId());
             stmt.setDouble(6, student.getGpa());
-            stmt.setLong(7, student.getId());
+            stmt.setString(7, student.getAddress());
+            stmt.setLong(8, student.getId());
+
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new SQLException("Lỗi cơ sở dữ liệu: " + e.getMessage(), e);
         }
     }
 
-    public static boolean deleteStudent(long studentId) {
+    public static boolean deleteStudent(long studentId) throws SQLException {
         String query = "DELETE FROM sinhvien WHERE masv=?";
 
         try (Connection conn = getConnection();
@@ -131,13 +139,12 @@ public class SupaBaseConnection {
 
             stmt.setLong(1, studentId);
             return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+        }  catch (SQLException e) {
+            throw new SQLException("Lỗi cơ sở dữ liệu: " + e.getMessage(), e);
         }
     }
 
-    public static List<Student> searchStudents(String name) {
+    public static List<Student> searchStudents(String name) throws SQLException {
         List<Student> students = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT * FROM sinhvien");
         List<String> parameters = new ArrayList<>();
@@ -170,7 +177,7 @@ public class SupaBaseConnection {
                 }
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("Lỗi cơ sở dữ liệu: " + e.getMessage(), e);
         }
         return students;
     }
