@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SupaBaseConnection {
-    // URL kết nối đến database (Ở đây là dùng SupaBase host)
+    // URL kết nối đến database (Ở đây là dùng SupaBase)
+    // Có thể dùng file properties để thay đổi linh hoạt nhưng mà lười :))))
     private static final String DB_URL = "jdbc:postgresql://aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?user=postgres.ofmkamppewhdxaecryag&password=Trankimcuong2003";
 
     // khởi tạo kết nối
@@ -37,7 +38,36 @@ public class SupaBaseConnection {
         List<Student> students = new ArrayList<>();
 
         try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM sinhvien");
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM sinhvien WHERE isdeleted = false");
+             ResultSet rs = stmt.executeQuery()) {
+
+            // lấy các giá trị tương ứng các bảng thuộc tính
+            // (vị trí, thứ tự tương ứng với constructor trong class SinhVien)
+            while (rs.next()) {
+                Student student = new Student(
+                        rs.getInt("masv"),
+                        rs.getString("name"),
+                        rs.getInt("age"),
+                        rs.getString("gender"),
+                        rs.getInt("major_id"),
+                        rs.getInt("class_id"),
+                        (rs.getDouble("gpa")),
+                        rs.getString("address")
+                );
+                students.add(student);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return students;
+    }
+
+    // load sinh viên đã bị xoá
+    public static List<Student> loadDeletedStudents() {
+        List<Student> students = new ArrayList<>();
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM sinhvien WHERE isdeleted = true");
              ResultSet rs = stmt.executeQuery()) {
 
             // lấy các giá trị tương ứng các bảng thuộc tính
@@ -131,26 +161,98 @@ public class SupaBaseConnection {
         }
     }
 
+    // dùng Function của Postgre để update trạng thái sinh viên
+    // ở đây đang dùng trạng thái update mặc định là true (tức là bị xoá)
     public static boolean deleteStudent(long studentId) throws SQLException {
-        String query = "DELETE FROM sinhvien WHERE masv=?";
+        String query = "select update_sv_state (?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(query)) {
-
             stmt.setLong(1, studentId);
-            return stmt.executeUpdate() > 0;
+            stmt.setBoolean(2, true);
+            stmt.executeQuery();
+            return stmt.execute();
         }  catch (SQLException e) {
             throw new SQLException("Lỗi cơ sở dữ liệu: " + e.getMessage(), e);
         }
     }
 
+    public static boolean fullDeleteStudent(long studentId) throws SQLException {
+        String query = "select delete_sv(?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setLong(1, studentId);
+            stmt.executeQuery();
+            return stmt.execute();
+        }  catch (SQLException e) {
+            throw new SQLException("Lỗi cơ sở dữ liệu: " + e.getMessage(), e);
+        }
+    }
+
+    // recover để khôi phục lại trạng thái của sinh viên
+    // chưa được áp dụng
+    public static boolean recoverStudent(long studentId) throws SQLException {
+        String query = "select update_sv_state (?, ?)";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setLong(1, studentId);
+            stmt.setBoolean(2, false);
+            stmt.executeQuery();
+            return stmt.execute();
+        }  catch (SQLException e) {
+            throw new SQLException("Lỗi cơ sở dữ liệu: " + e.getMessage(), e);
+        }
+    }
+
+    // tìm kiếm sinh viên và thêm vào 1 list
     public static List<Student> searchStudents(String name) throws SQLException {
         List<Student> students = new ArrayList<>();
-        StringBuilder query = new StringBuilder("SELECT * FROM sinhvien");
+        StringBuilder query = new StringBuilder("SELECT * FROM sinhvien WHERE isdeleted = false");
         List<String> parameters = new ArrayList<>();
 
         if (name != null && !name.trim().isEmpty()) {
-            query.append(" WHERE name ILIKE ?"); // ILIKE == LIKE trong SQL
+            query.append(" And name ILIKE ?"); // ILIKE == LIKE trong SQL
+            parameters.add("%" + name + "%");
+        }
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query.toString())) {
+
+            for (int i = 0; i < parameters.size(); i++) {
+                stmt.setString(i + 1, parameters.get(i));
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Student student = new Student(
+                            rs.getInt("masv"),
+                            rs.getString("name"),
+                            rs.getInt("age"),
+                            rs.getString("gender"),
+                            rs.getInt("major_id"),
+                            rs.getInt("class_id"),
+                            rs.getDouble("gpa"),
+                            rs.getString("address")
+                    );
+                    students.add(student);
+                }
+            }
+        } catch (SQLException e) {
+            throw new SQLException("Lỗi cơ sở dữ liệu: " + e.getMessage(), e);
+        }
+        return students;
+    }
+
+    // tìm kiếm sinh viên và thêm vào 1 list
+    public static List<Student> searchDeletedStudent(String name) throws SQLException {
+        List<Student> students = new ArrayList<>();
+        StringBuilder query = new StringBuilder("SELECT * FROM sinhvien WHERE isdeleted = true");
+        List<String> parameters = new ArrayList<>();
+
+        if (name != null && !name.trim().isEmpty()) {
+            query.append(" And name ILIKE ?"); // ILIKE == LIKE trong SQL
             parameters.add("%" + name + "%");
         }
 

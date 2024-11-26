@@ -11,6 +11,7 @@ import java.util.Map;
 
 import static com.application.database.SupaBaseConnection.getConnection;
 
+// ------------------ HELPER giúp map các bảng và lấy thông tin trong DB ---------------------------
 public class DBHelper {
     private Map<Integer, String> majorMap = new HashMap<>();
     private Map<Integer, String> classMap = new HashMap<>();
@@ -19,6 +20,7 @@ public class DBHelper {
         loadMajorMap();
         loadClassMap();
     }
+
     // Hàm để lấy danh sách ngành từ cơ sở dữ liệu
     public ObservableList<Major> getMajors() {
         ObservableList<Major> majors = FXCollections.observableArrayList();
@@ -39,6 +41,7 @@ public class DBHelper {
         return majors;
     }
 
+    // lấy danh sách các lớp
     public ObservableList<Class> getClasses() {
         ObservableList<Class> classes = FXCollections.observableArrayList();
         // Thực hiện truy vấn để lấy các Class từ cơ sở dữ liệu

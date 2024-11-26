@@ -1,6 +1,8 @@
 package com.application.utils;
 
 public class Util {
+
+    // Kiểm tra định dạng
     public static boolean isNumeric(String str) {
         try {
             Integer.parseInt(str);

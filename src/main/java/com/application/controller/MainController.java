@@ -12,10 +12,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.Stage;
 
-
+import java.io.IOException;
 import java.util.List;
 
 public class MainController {
@@ -31,13 +35,36 @@ public class MainController {
     private ComboBox<Class> classComboBox;
 
     @FXML
-    private Button searchStudentBtn, addStudentBtn, editStudentBtn, deleteStudentBtn;
+    private Button searchStudentBtn, addStudentBtn, editStudentBtn, deleteStudentBtn, deletedListBtn, reloadTable;
     @FXML
     private TableView<Student> studentTable;
     @FXML
     private TableColumn<Student, String> idColumn, nameColumn, classColumn, addressColumn, ageColumn, genderColumn, majorColumn, gpaColumn;
 
     private ObservableList<Student> studentList;
+
+
+    @FXML
+    public void handleChangeToDeletedList (ActionEvent event) {
+        changeToDeletedList();
+    }
+
+    private void changeToDeletedList(){
+        try {
+            // Chuyển sang mainScene
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/application/main/recoverScene.fxml"));
+            Scene recoverScene = new Scene(loader.load());
+            Stage stage = (Stage) deletedListBtn.getScene().getWindow();
+
+            // Load scene mới
+            stage.setScene(recoverScene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Failed to load main scene");
+        }
+    }
 
     @FXML
     public void initialize() {

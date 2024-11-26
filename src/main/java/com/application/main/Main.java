@@ -16,8 +16,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
+        // Load giao diện từ fxml
         Parent root = FXMLLoader.load(getClass().getResource("loginScene.fxml"));
+        // Đặt title
         primaryStage.setTitle("Quản Lí Sinh Viên");
+
+        // Set scene
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

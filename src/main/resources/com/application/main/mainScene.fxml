@@ -22,7 +22,7 @@
       </HBox>
 
       <!-- Chỉnh sửa và thêm thông tin sinh viên -->
-      <HBox layoutX="20.0" layoutY="52.0" prefHeight="322.0" prefWidth="1151.0" spacing="30.0">
+      <HBox layoutX="20.0" layoutY="52.0" prefHeight="340.0" prefWidth="1151.0" spacing="30.0">
          <!-- Cột trái chứa các nút -->
          <VBox alignment="CENTER" minHeight="-Infinity" prefHeight="330.0" prefWidth="192.0" spacing="20.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-padding: 10px;">
             <Button fx:id="searchStudentBtn" maxWidth="200.0" onAction="#handleSearchStudent" style="-fx-background-color: #007adf; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 10px;" text="Tìm Kiếm Sinh Viên" />
@@ -30,16 +30,17 @@
             <Button fx:id="editStudentBtn" maxWidth="200.0" onAction="#handleEditStudent" style="-fx-background-color: #ff9f00; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 10px;" text="Sửa Sinh Viên" />
             <Button fx:id="deleteStudentBtn" maxWidth="200.0" onAction="#handleDeleteStudent" style="-fx-background-color: #ff3b30; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 10px;" text="Xóa Sinh Viên" />
             <Button fx:id="reloadTable" maxWidth="200.0" onAction="#handleReloadTable" style="-fx-background-color: #ff3b30; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 10px;" text="Reload" />
+            <Button fx:id="deletedListBtn" maxWidth="200.0" onAction="#handleChangeToDeletedList" style="-fx-background-color: #ff9f00; -fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-radius: 10px;" text="Danh Sách Đã Xoá" />
          </VBox>
 
          <!-- Cột phải chứa form nhập thông tin sinh viên -->
-         <VBox maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="350.0" prefWidth="931.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-padding: 20px;">
+         <VBox maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="260.0" prefWidth="930.0" spacing="10.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px; -fx-padding: 20px;">
             <!-- Thay thế Tên thành Mã Sinh Viên -->
             <TextField fx:id="idField" promptText="Mã sinh viên" style="-fx-background-radius: 10px; -fx-padding: 10px; -fx-font-size: 16px;" />
             <!-- Dòng Tuổi chỉ chiếm 25% -->
             <HBox spacing="10.0">
-               <TextField fx:id="studentNameField" promptText="Tên sinh viên" style="-fx-background-radius: 10px; -fx-padding: 10px; -fx-font-size: 16px;" prefWidth="700.0" />
-               <TextField fx:id="ageField" promptText="Tuổi" style="-fx-background-radius: 10px; -fx-padding: 10px; -fx-font-size: 16px;" prefWidth="200.0" />
+               <TextField fx:id="studentNameField" prefWidth="700.0" promptText="Tên sinh viên" style="-fx-background-radius: 10px; -fx-padding: 10px; -fx-font-size: 16px;" />
+               <TextField fx:id="ageField" prefWidth="200.0" promptText="Tuổi" style="-fx-background-radius: 10px; -fx-padding: 10px; -fx-font-size: 16px;" />
             </HBox>
             <TextField fx:id="addressField" promptText="Địa chỉ" style="-fx-background-radius: 10px; -fx-padding: 10px; -fx-font-size: 16px;" />
             <HBox spacing="10.0">
@@ -51,7 +52,7 @@
                      </FXCollections>
                   </items>
                </ComboBox>
-               <ComboBox fx:id="majorComboBox" promptText="Ngành học" style="-fx-background-radius: 10px; -fx-font-size: 16px;" prefWidth="420">
+               <ComboBox fx:id="majorComboBox" prefWidth="420" promptText="Ngành học" style="-fx-background-radius: 10px; -fx-font-size: 16px;">
                   <!-- Dữ liệu chuyên ngành sẽ được điền vào ComboBox thông qua code backend -->
                </ComboBox>
                <!-- Chuyển TextField classField thành ComboBox -->
@@ -64,7 +65,7 @@
       </HBox>
 
       <!-- Danh sách sinh viên -->
-      <TableView fx:id="studentTable" layoutX="20.0" layoutY="419.0" maxHeight="1.7976931348623157E308" prefHeight="273.0" prefWidth="1151.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px;">
+      <TableView fx:id="studentTable" layoutX="20.0" layoutY="399.0" maxHeight="1.7976931348623157E308" prefHeight="294.0" prefWidth="1151.0" style="-fx-background-color: #ffffff; -fx-background-radius: 10px;">
          <columns>
             <TableColumn fx:id="idColumn" prefWidth="100.0" text="Mã Sinh Viên" />
             <TableColumn fx:id="nameColumn" prefWidth="150.0" text="Tên Sinh Viên" />

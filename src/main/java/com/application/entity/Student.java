@@ -21,8 +21,8 @@ public class Student {
         this.age = new SimpleIntegerProperty(age);
         this.gender = new SimpleStringProperty(gender);
         this.majorId = new SimpleIntegerProperty(majorId);
-        this.majorName = new SimpleStringProperty(majorName); // Initializes majorName
-        this.className = new SimpleStringProperty(className);  // Initializes className
+        this.majorName = new SimpleStringProperty(majorName);
+        this.className = new SimpleStringProperty(className);
         this.gpa = new SimpleDoubleProperty(gpa);
     }
 
@@ -50,13 +50,13 @@ public class Student {
     public DoubleProperty gpaProperty() { return gpa; }
 
     // Getters and Setters
-    public long getId() { return id.get(); }
+    public long getId() { return id.get(); } // Trả về mã SV
     public void setId(long id) { this.id.set(id); }
 
-    public String getName() { return name.get(); }
+    public String getName() { return name.get(); } // Trả về tên sinh viên
     public void setName(String name) { this.name.set(name); }
 
-    public int getAge() { return age.get(); }
+    public int getAge() { return age.get(); } // Trả về tuổi
     public void setAge(int age) { this.age.set(age); }
 
     public String getGender() { return gender.get(); }
@@ -75,11 +75,9 @@ public class Student {
     public void setClassName(String className) { this.className.set(className); }
 
 
-    public double getGpa() { return gpa.get(); }
+    public double getGpa() { return gpa.get(); } // Trả về GPA
     public void setGpa(double gpa) { this.gpa.set(gpa); }
 
-    public String getAddress() { return address.get(); }
-    public void setAddress(String address) {
-        this.address.set(address);
-    }
+    public String getAddress() { return address.get(); } // Trả về địa chỉ
+    public void setAddress(String address) {this.address.set(address); }
 }

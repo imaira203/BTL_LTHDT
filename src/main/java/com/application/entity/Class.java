@@ -6,16 +6,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Class {
-    private int id;
-    private String name;
+    private int id; // Mã lớp
+    private String name; // Tên lớp
 
-    // Constructor
+    // -------- Constructor ----------
     public Class(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    // Getters và Setters
+    // -------- Getters và Setters -------
     public int getId() {
         return id;
     }
